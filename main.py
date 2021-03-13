@@ -22,7 +22,7 @@ class Parser:
         self.registration_frame = LabelFrame(self.root, text='Регистрация', bg='#202020', fg='#CCCCCC')
         self.my_login_entry = Entry(self.registration_frame, bg='#202020', fg='#FFFFFF')
         self.my_password_entry = Entry(self.registration_frame, bg='#202020', fg='#FFFFFF', show='*')
-        self.status = Label(self.root, text='Можно посмотреть только открытые профили', bg='#202020', fg='#4A594F')
+        self.status = Label(self.root, text='Можно посмотреть только открытые профили', bg='#202020', fg='#CCCCCC')
         self.username_entry = Entry(self.root, bg='#202020', fg='#CCCCCC')
         self.count_similar = Label(self.root, text='Взаимные:', bg='#202020', fg='#CCCCCC')
         self.subscribers_label = Label(self.root, text='')
