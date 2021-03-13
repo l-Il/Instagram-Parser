@@ -1,4 +1,4 @@
-from instaloader import Instaloader, Profile, exceptions
+from instaloader import Instaloader, Profile
 from tkinter import *
 
 
