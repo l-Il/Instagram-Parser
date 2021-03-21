@@ -29,9 +29,9 @@ class Parser:
         self.second_username_entry = Entry(self.root, bg='#202020', fg='#CCCCCC')
         self.count_similar = Label(self.root, text='Взаимные:', bg='#202020', fg='#CCCCCC')
 
-        self.subscribers_label = Label(self.root, text='')
-        self.subscribed_label = Label(self.root, text='')
-        self.similar_label = Label(self.root, text='')
+        self.subscribers_text = Text(self.root)
+        self.subscribed_text = Text(self.root)
+        self.similar_text = Text(self.root)
 
         Label(self.registration_frame, text='Логин:', bg='#202020', fg='#CCCCCC').place(x=0, y=0)
         Label(self.registration_frame, text='Пароль:', bg='#202020', fg='#CCCCCC').place(x=0, y=20)
@@ -54,15 +54,13 @@ class Parser:
             Label(self.root, text='Подписчики:', bg='#202020', fg='#CCCCCC').place(x=0, y=65, height=20)
             Label(self.root, text='Подписки:', bg='#202020', fg='#CCCCCC').place(x=150, y=65, height=20)
             self.count_similar = Label(self.root, text='Взаимные:', bg='#202020', fg='#CCCCCC')
-            self.count_similar.place(x=300, y=65)
+            self.count_similar.place(x=300, y=65, height=20)
             self.status['text'] = 'Загрузка. Подождите'
-            self.root.geometry('450x700')
-            self.subscribers_label['text'] = ''
-            self.subscribed_label['text'] = ''
-            self.similar_label['text'] = ''
-            self.subscribers_label.place(x=0, y=85, width=149, height=610)
-            self.subscribed_label.place(x=150, y=85, width=149, height=610)
-            self.similar_label.place(x=300, y=85, width=149, height=610)
+            self.root.geometry('450x390')
+
+            self.subscribers_text.place(x=0, y=85, width=149, height=300)
+            self.subscribed_text.place(x=150, y=85, width=149, height=300)
+            self.similar_text.place(x=300, y=85, width=149, height=300)
             self.root.update()
             self.username = self.username_entry.get()
             self.my_login = self.my_login_entry.get()
@@ -72,16 +70,16 @@ class Parser:
 
             for i in profile.get_followees():
                 self.list2.append(i.username)
-                self.subscribed_label['text'] = self.subscribed_label['text'] + '\n' + str(i.username)
+                self.subscribed_text.insert(-1.0, f'{str(i.username)}\n')
 
             for i in profile.get_followers():
                 self.list1.append(i.username)
-                self.subscribers_label['text'] = self.subscribers_label['text'] + '\n' + str(i.username)
+                self.subscribers_text.insert(-1.0, f'{str(i.username)}\n')
 
             for i in range(len(self.list1)):
                 if self.list1[i] in self.list2:
                     self.list3.append(self.list1[i])
-                    self.similar_label['text'] = self.similar_label['text'] + '\n' + str(self.list1[i])
+                    self.similar_text.insert(-1.0, f'{str(self.list1[i])}\n')
                     self.count_similar['text'] = 'Взаимные: ' + str(len(self.list3))
             self.status['text'] = 'Готово!'
         except Exception as e:
@@ -105,9 +103,9 @@ class Parser:
     def find_similar(self):
         try:
             self.status['text'] = 'Загрузка. Подождите'
-            self.root.geometry('450x700')
-            self.subscribed_label['text'] = ''
-            self.subscribed_label.place(x=150, y=85, width=149, height=610)
+            self.root.geometry('450x390')
+            self.subscribed_text.insert(1.0, '')
+            self.subscribed_text.place(x=150, y=85, width=149, height=300)
             self.root.update()
             self.first_username = self.username_entry.get()
             self.second_username = self.second_username_entry.get()
@@ -126,7 +124,8 @@ class Parser:
             for i in range(len(self.list1)):
                 if self.list1[i] in self.list2:
                     self.list3.append(self.list1[i])
-                    self.subscribed_label['text'] = self.subscribed_label['text'] + '\n' + str(self.list1[i])
+                    self.subscribed_text.insert(-1.0, f'{str(self.list1[i])}\n')
+
             self.status['text'] = 'Готово!'
         except Exception as e:
             self.status['text'] = e
