@@ -68,19 +68,20 @@ class Parser:
             self.L.login(self.my_login, self.my_password)
             profile = Profile.from_username(self.L.context, self.username)
 
-            for i in profile.get_followees():
-                self.list2.append(i.username)
-                self.subscribed_text.insert(-1.0, f'{str(i.username)}\n')
-
             for i in profile.get_followers():
                 self.list1.append(i.username)
-                self.subscribers_text.insert(-1.0, f'{str(i.username)}\n')
+                self.subscribers_text.insert(-1.0, f'@{str(i.username)}\n')
 
-            for i in range(len(self.list1)):
+            for i in profile.get_followees():
+                self.list2.append(i.username)
+                self.subscribed_text.insert(-1.0, f'@{str(i.username)}\n')
+
+            for i in range(len(self.list1)-1):
                 if self.list1[i] in self.list2:
                     self.list3.append(self.list1[i])
-                    self.similar_text.insert(-1.0, f'{str(self.list1[i])}\n')
-                    self.count_similar['text'] = 'Взаимные: ' + str(len(self.list3))
+                    self.similar_text.insert(-1.0, f'@{str(self.list1[i])}\n')
+
+            self.count_similar['text'] = 'Взаимные: ' + str(len(self.list3))
             self.status['text'] = 'Готово!'
         except Exception as e:
             self.status['text'] = e
@@ -124,7 +125,7 @@ class Parser:
             for i in range(len(self.list1)):
                 if self.list1[i] in self.list2:
                     self.list3.append(self.list1[i])
-                    self.subscribed_text.insert(-1.0, f'{str(self.list1[i])}\n')
+                    self.subscribed_text.insert(-1.0, f'@{str(self.list1[i])}\n')
 
             self.status['text'] = 'Готово!'
         except Exception as e:
