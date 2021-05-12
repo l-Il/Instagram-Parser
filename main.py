@@ -82,15 +82,19 @@ class Parser:
                     self.list3.append(self.list1[i])
                     self.similar_text.insert(-1.0, f'@{str(self.list1[i])}\n')
 
-            for i in range(len(max(self.list1, self.list2))):
-                try:
-
-                    print(f'{i+1} | {self.list1[i]} | {self.list2[i]}')
-                except Exception as e: # КОСТЫЛЬ
+            with open(f'{self.username}.txt', 'w', encoding='UTF-8') as file:
+                file.write('№ | Подписчики | Подписки\n')
+                for i in range(len(max(self.list1, self.list2))):
                     try:
-                        print(f'{i+1} | {self.list1[i]} | ___')
-                    except Exception as e:
-                        print(f'{i+1} | ___ | {self.list2[i]}')
+                        if self.list1[i] in self.list3:
+                            file.write(f'{i+1} |[ {self.list1[i]} ]| {self.list2[i]}' + '\n')
+                        else:
+                            file.write(f'{i+1} | {self.list1[i]} | {self.list2[i]}' + '\n')
+                    except Exception as e:  # КОСТЫЛЬ | КОСТЫЛЬ | КОСТЫЛЬ
+                        try:
+                            file.write(f'{i+1} | {self.list1[i]} | ___' + '\n')
+                        except Exception as e:
+                            file.write(f'{i+1} | ___ | {self.list2[i]}' + '\n')
 
             self.subslbl['text'] = 'Подписчики: ' + str(len(self.list1))
             self.subdlbl['text'] = 'Подписки: ' + str(len(self.list2))
