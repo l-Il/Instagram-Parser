@@ -1,5 +1,7 @@
 from instaloader import Instaloader, Profile
 from tkinter import *
+import os
+import glob
 
 
 class Parser:
@@ -43,9 +45,10 @@ class Parser:
         self.username_entry.place(x=191, y=25, width=100, height=20)
         Label(self.root, text='Ник:', bg='#202020', fg='#CCCCCC').place(x=291, y=25, height=20)
         self.second_username_entry.place(x=325, y=25, width=100, height=20)
-        Button(self.root, text='Посмотреть взаимных', bg='#202020', fg='#FF0000', relief=FLAT, border='0', command=self.subs).place(x=160, y=46, height=24)
-        Button(self.root, text='Скачать истории', bg='#202020', fg='#FF00FF', relief=FLAT, border='0', command=self.stories).place(x=295, y=46, height=24)
-        Button(self.root, text='Общие', bg='#202020', fg='#FFFF00', relief=FLAT, border='0', command=self.find_similar).place(x=400, y=46, height=24)
+        Button(self.root, text='Взаимные', bg='#202020', fg='#FF0000', relief=FLAT, border='0', command=self.subs).place(x=160, y=46, height=24)
+        Button(self.root, text='Истории', bg='#202020', fg='#FF00FF', relief=FLAT, border='0', command=self.stories).place(x=230, y=46, height=24)
+        Button(self.root, text='Общие', bg='#202020', fg='#FFFF00', relief=FLAT, border='0', command=self.find_similar).place(x=290, y=46, height=24)
+        Button(self.root, text='Актуальное', bg='#202020', fg='#0000FF', relief=FLAT, border='0', command=self.highlights).place(x=350, y=46, height=24)
         self.subslbl = Label(self.root, text='Подписчики:', bg='#202020', fg='#CCCCCC')
         self.subdlbl = Label(self.root, text='Подписки:', bg='#202020', fg='#CCCCCC')
         self.count_similar = Label(self.root, text='Взаимные:', bg='#202020', fg='#CCCCCC')
@@ -114,6 +117,16 @@ class Parser:
             profile = Profile.from_username(self.L.context, self.username)
             print(profile.userid)
             self.L.download_stories(userids=[profile.userid])
+
+            for _ in glob.glob(f'：stories/*.json.xz'):          # Удаляем файлы с метаданными (расширение .json.xz)
+                os.remove(_)
+            path, dirs, files = next(os.walk(f'：stories/'))      # Получаем названия файлов в списке
+
+            for file in files:
+                temp = file.replace('.jpg', '.mp4')
+                if temp != file and temp in files:
+                    os.remove(f'：stories/{file}')
+
             self.status['text'] = 'Готово!'
         except Exception as e:
             self.status['text'] = e
@@ -143,6 +156,32 @@ class Parser:
                 if self.list1[i] in self.list2:
                     self.list3.append(self.list1[i])
                     self.subscribed_text.insert(-1.0, f'@{str(self.list1[i])}\n')
+
+            self.status['text'] = 'Готово!'
+        except Exception as e:
+            self.status['text'] = e
+
+    def highlights(self):
+        try:
+            self.status['text'] = 'Загрузка. Подождите'
+            self.root.update()
+            self.username = self.username_entry.get()
+            self.my_login = self.my_login_entry.get()
+            self.my_password = self.my_password_entry.get()
+            self.L.login(self.my_login, self.my_password)
+            profile = Profile.from_username(self.L.context, self.username)
+            for highlight in self.L.get_highlights(profile):
+                for item in highlight.get_items():
+                    self.L.download_storyitem(item, f'{highlight.owner_username}/{highlight.title}')
+
+                for _ in glob.glob(f'{self.username}∕{highlight.title}/*.json.xz'):          # Удаляем файлы с метаданными (расширение .json.xz)
+                    os.remove(_)
+                path, dirs, files = next(os.walk(f'{self.username}∕{highlight.title}/'))      # Получаем названия файлов в списке
+
+                for file in files:
+                    temp = file.replace('.jpg', '.mp4')
+                    if temp != file and temp in files:
+                        os.remove(f'{self.username}∕{highlight.title}/{file}')
 
             self.status['text'] = 'Готово!'
         except Exception as e:
